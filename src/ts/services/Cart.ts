@@ -22,19 +22,19 @@ export default class Cart {
                         return newItem;
                     }
                     return obj;
-                })
-            } else {
-                this._items.push(item); 
+                });
+                return;
             }
+            this._items.push(item); 
             return;
         }
         //если добавляемого товара в корзине нет, то нужно понимать является ли он исчисляемым? т.е инстансом Gadget
         const isGadget = item instanceof Gadget;
         if(isGadget) {
-            //создаем новый инстанс, чтобы не мутировать исходный
+            //пушим новый инстанс, чтобы не мутировать исходный
             this._items.push(new Gadget(item.id, item.name, item.model, item.price, item.count));
         } else {
-            //здесь нет смысла создавать, т.к. инстансы кроме Gadget не изменяются
+            //здесь нет смысла создавать новый инстанс, т.к. инстансы кроме Gadget не изменяются
             this._items.push(item);
         }
     }
@@ -61,9 +61,16 @@ export default class Cart {
         if(index != -1) {
             let currentItem = this._items[index];
             if(currentItem instanceof Gadget && currentItem.count > 1) {
-                currentItem.count -= 1;
-            } else if(currentItem instanceof Gadget && currentItem.count < 2) {
-                this._items.splice(index, 1);
+                this._items = this._items.map(obj => {
+                    //находим нужную позицию и важно, чтобы она была инстансом Gadget
+                    if(obj instanceof Gadget && obj.id === currentItem.id) {
+                        //создаем новый инстанс класса Gadget, чтобы избежать мутабельности
+                        let newItem = new Gadget(obj.id, obj.name, obj.model, obj.price, obj.count);
+                        newItem.count -= 1;
+                        return newItem;
+                    }
+                    return obj;
+                });
             } else {
                 this._items.splice(index, 1);
             }

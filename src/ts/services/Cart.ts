@@ -33,10 +33,10 @@ export default class Cart {
         if(isGadget) {
             //пушим новый инстанс, чтобы не мутировать исходный
             this._items.push(new Gadget(item.id, item.name, item.model, item.price, item.count));
-        } else {
-            //здесь нет смысла создавать новый инстанс, т.к. инстансы кроме Gadget не изменяются
-            this._items.push(item);
+            return;
         }
+        //здесь нет смысла создавать новый инстанс, т.к. инстансы кроме Gadget не изменяются
+        this._items.push(item);
     }
     get items(): Buyable[] {
         return [...this._items];
@@ -71,9 +71,9 @@ export default class Cart {
                     }
                     return obj;
                 });
-            } else {
-                this._items.splice(index, 1);
+                return;
             }
+            this._items.splice(index, 1);
             return;
         }
         throw new Error('В корзине отсутствует товар по данному id');

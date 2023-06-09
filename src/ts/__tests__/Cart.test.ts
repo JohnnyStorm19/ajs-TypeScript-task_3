@@ -38,6 +38,13 @@ test('Class instances are created', () => {
 test('Adding items to cart', () => {
     const cart = new Cart;
 
+    // И так тоже код будет работать без ошибок
+    // const iphone = new Gadget(1, 'iphone', '12', 64000);
+    // cart.add(iphone);
+    // cart.add(iphone);
+    // cart.add(iphone);
+    // cart.add(iphone);
+
     cart.add(new Gadget(1, 'iphone', '12', 64000));
     cart.add(new Gadget(1, 'iphone', '12', 64000));
     cart.add(new Gadget(1, 'iphone', '12', 64000));

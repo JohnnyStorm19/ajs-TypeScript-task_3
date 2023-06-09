@@ -10,15 +10,33 @@ export default class Cart {
         if(index != -1) {
             let currentItem = this._items[index];
             //если добавляемый товар является гаджетом (телефон, ноут и т.д.)
-            if(currentItem instanceof Gadget && item.count) {
-                currentItem.count = currentItem.count + item.count;
+            if(currentItem instanceof Gadget) {
+                //перезаписываем исходный массив
+                this._items = this._items.map(obj => {
+                    //находим нужную позицию и важно, чтобы она была инстансом Gadget
+                    if(obj instanceof Gadget && obj.id === currentItem.id) {
+                        //создаем новый инстанс класса Gadget, чтобы избежать мутабельности
+                        let newItem = new Gadget(obj.id, obj.name, obj.model, obj.price);
+                        //по умолчанию свойство count = 1, и к нему прибавляем имеющееся количество
+                        newItem.count += obj.count;
+                        return newItem;
+                    }
+                    return obj;
+                })
             } else {
                 this._items.push(item); 
             }
             return;
         }
-        //добавляемого товара в корзине нет.
-        this._items.push(item);
+        //если добавляемого товара в корзине нет, то нужно понимать является ли он исчисляемым? т.е инстансом Gadget
+        const isGadget = item instanceof Gadget;
+        if(isGadget) {
+            //создаем новый инстанс, чтобы не мутировать исходный
+            this._items.push(new Gadget(item.id, item.name, item.model, item.price, item.count));
+        } else {
+            //здесь нет смысла создавать, т.к. инстансы кроме Gadget не изменяются
+            this._items.push(item);
+        }
     }
     get items(): Buyable[] {
         return [...this._items];
